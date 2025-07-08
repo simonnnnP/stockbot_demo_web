@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 class="text-danger">Obras</h1>
+<table class="table table-bordered table-striped">
+    <thead class="table-danger">
+        <tr><th>Obra</th><th>Estado</th></tr>
+    </thead>
+    <tbody>
+        {% for w in works %}
+        <tr>
+            <td>{{ w.obra }}</td>
+            <td>{{ w.estado }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
