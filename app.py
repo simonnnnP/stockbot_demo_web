@@ -63,5 +63,6 @@ def whatsapp():
     print("📩 Mensaje recibido desde WhatsApp")
     incoming_msg = request.values.get("Body", "").lower()
 
-    match = re.search(r"(sacamos|retiramos|ingresamos)?\s
+    match = re.search(r"(sacamos|retiramos|ingresamos)?\s+(\d+)\s+(.+)", message.lower())
+
 
