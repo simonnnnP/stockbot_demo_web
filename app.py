@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from excel import leer_stock, actualizar_stock
 import os
-import re  # Para procesar mensajes de WhatsApp
+import re
 
 app = Flask(__name__)
 app.secret_key = "demo_secret_key"
@@ -48,9 +48,16 @@ def egreso():
             actualizar_stock(sku, qty, "egreso")
             flash(f"Retirados {qty:g} de {sku}", "success")
         except ValueError:
-            f
+            flash("Stock insuficiente", "danger")
+        return redirect(url_for("stock_list"))
+    return render_template("egreso.html")
+
+@app.route("/obras")
+def obras():
+    return render_template("works.html", works=works)
+
 # ------------------- Arranque del servidor -----------------------
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Usado por Render
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
