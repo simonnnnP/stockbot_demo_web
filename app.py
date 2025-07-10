@@ -1,36 +1,32 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from excel import leer_stock, actualizar_stock  # Funciones que manejan el Excel
-import os  # <- NECESARIO para leer la variable PORT en Render/Heroku/Render
+from excel import leer_stock, actualizar_stock
+import os
+import re  # <- para procesar mensajes de WhatsApp
 
 app = Flask(__name__)
 app.secret_key = "demo_secret_key"
 
-# Cargamos stock al arrancar
+# Cargar stock al inicio
 stock = leer_stock()
 
-# Demo de obras (opcional)
+# Obras demo
 works = [
     {"obra": "Puerta corrediza López", "estado": "Armado"},
     {"obra": "Ventanas Acosta", "estado": "Corte"},
     {"obra": "Frente Vidriado S.A.", "estado": "Terminado"},
 ]
 
-# ------- Rutas --------------------------------------------------------------
+# ------------------- Rutas Web -----------------------
 
 @app.route("/")
 def dashboard():
     low_stock = [item for item in stock if item["qty"] < 100]
-    return render_template(
-        "index.html",
-        stock=len(stock),
-        works=len(works),
-        low_stock=low_stock,
-    )
+    return render_template("index.html", stock=len(stock), works=len(works), low_stock=low_stock)
 
 @app.route("/stock")
 def stock_list():
     global stock
-    stock = leer_stock()  # recarga cada vez que entramos
+    stock = leer_stock()
     return render_template("stock.html", stock=stock)
 
 @app.route("/ingreso", methods=["GET", "POST"])
@@ -60,8 +56,12 @@ def egreso():
 def obras():
     return render_template("works.html", works=works)
 
-# ------- Arranque -----------------------------------------------------------
+# ------------------- Webhook WhatsApp -----------------------
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Render/Heroku fijan PORT
-    app.run(host="0.0.0.0", port=port)
+@app.route("/whatsapp", methods=["POST"])
+def whatsapp():
+    print("📩 Mensaje recibido desde WhatsApp")
+    incoming_msg = request.values.get("Body", "").lower()
+
+    match = re.search(r"(sacamos|retiramos|ingresamos)?\s
+
