@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from excel import leer_stock, actualizar_stock
 import os
-import re  # <- para procesar mensajes de WhatsApp
+import re  # Para procesar mensajes de WhatsApp
 
 app = Flask(__name__)
 app.secret_key = "demo_secret_key"
@@ -48,21 +48,4 @@ def egreso():
             actualizar_stock(sku, qty, "egreso")
             flash(f"Retirados {qty:g} de {sku}", "success")
         except ValueError:
-            flash("Stock insuficiente", "danger")
-        return redirect(url_for("stock_list"))
-    return render_template("egreso.html")
-
-@app.route("/obras")
-def obras():
-    return render_template("works.html", works=works)
-
-# ------------------- Webhook WhatsApp -----------------------
-
-@app.route("/whatsapp", methods=["POST"])
-def whatsapp():
-    print("📩 Mensaje recibido desde WhatsApp")
-    incoming_msg = request.values.get("Body", "").lower()
-
-    match = re.search(r"(sacamos|retiramos|ingresamos)?\s+(\d+)\s+(.+)", message.lower())
-
-
+            f
